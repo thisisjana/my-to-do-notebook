@@ -1,0 +1,781 @@
+/* ============================================================
+   1. CSS VARIABLES — the palette & shared tokens
+   ============================================================ */
+:root {
+  /* Palette */
+  --paper: #fffdf8;
+  --bg: #f5eee7;
+  --pink: #d96c91;
+  --pink-soft: #f4d8e2;
+  --rose-dark: #a94b6d;
+  --text: #342b2e;
+  --text-soft: #786a6e;
+  --border: #e7d9d2;
+  --danger: #c05252;
+  --danger-soft: #f6e0df;
+
+  /* Notebook ruled-line color (very faint) */
+  --rule-line: rgba(163, 136, 121, 0.16);
+
+  /* Shape & motion */
+  --radius: 14px;
+  --radius-lg: 20px;
+  --shadow-paper: 0 1px 2px rgba(52, 43, 46, 0.04),
+    0 18px 40px -20px rgba(52, 43, 46, 0.28);
+  --shadow-soft: 0 8px 24px -14px rgba(52, 43, 46, 0.35);
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur: 200ms;
+
+  /* Fonts */
+  --font-body: "Nunito Sans", system-ui, -apple-system, sans-serif;
+  --font-display: "Fraunces", Georgia, serif;
+  --font-hand: "Caveat", "Segoe Script", cursive;
+}
+
+/* ============================================================
+   2. RESET / BASE
+   ============================================================ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background-color: var(--bg);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ============================================================
+   3. BODY / WARM PAPER BACKGROUND
+   ============================================================ */
+body {
+  font-family: var(--font-body);
+  color: var(--text);
+  background-color: var(--bg);
+  /* Barely-there paper grain built from tiny layered gradients */
+  background-image: radial-gradient(
+      rgba(150, 120, 100, 0.05) 1px,
+      transparent 1px
+    ),
+    radial-gradient(rgba(150, 120, 100, 0.04) 1px, transparent 1px);
+  background-size: 22px 22px, 13px 13px;
+  background-position: 0 0, 7px 11px;
+  line-height: 1.5;
+  min-height: 100vh;
+  padding: clamp(1rem, 3vw, 3rem) clamp(0.75rem, 3vw, 2rem);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================================
+   4. NOTEBOOK CONTAINER (the sheet of paper)
+   ============================================================ */
+.notebook {
+  position: relative;
+  width: 100%;
+  max-width: 620px;
+  background-color: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-paper);
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 4vw, 3rem)
+    clamp(1.25rem, 3vw, 2rem);
+  /* Faint ruled notebook lines behind everything */
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 33px,
+    var(--rule-line) 33px,
+    var(--rule-line) 34px
+  );
+  background-position: 0 90px;
+  overflow: hidden;
+}
+
+/* A soft pink margin line, like a notebook's left rule */
+.notebook::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: clamp(2.1rem, 6vw, 3.4rem);
+  width: 1.5px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--pink-soft) 12%,
+    var(--pink-soft) 88%,
+    transparent
+  );
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* ============================================================
+   5. HEADER
+   ============================================================ */
+.notebook__header {
+  position: relative;
+  text-align: center;
+  padding-bottom: 1.5rem;
+}
+
+.paperclip {
+  position: absolute;
+  top: -12px;
+  right: 4px;
+  width: 16px;
+  height: 40px;
+  border: 3px solid #c9b7ae;
+  border-radius: 10px;
+  transform: rotate(18deg);
+  opacity: 0.65;
+}
+.paperclip::after {
+  content: "";
+  position: absolute;
+  inset: 5px 3px 12px 3px;
+  border: 3px solid #c9b7ae;
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+}
+
+.notebook__eyebrow {
+  font-family: var(--font-hand);
+  font-size: 1.25rem;
+  color: var(--pink);
+  line-height: 1;
+  margin-bottom: 0.35rem;
+}
+
+.notebook__title {
+  position: relative;
+  display: inline-block;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.9rem, 6vw, 2.6rem);
+  letter-spacing: -0.01em;
+  color: var(--text);
+  text-wrap: balance;
+}
+
+.notebook__underline {
+  display: block;
+  height: 6px;
+  margin-top: 2px;
+  border-radius: 4px;
+  background: var(--pink-soft);
+}
+
+.notebook__subtitle {
+  margin-top: 0.6rem;
+  color: var(--text-soft);
+  font-size: 1rem;
+}
+
+.notebook__add {
+  margin-top: 1.4rem;
+}
+
+/* ============================================================
+   6. RULES (horizontal separators)
+   ============================================================ */
+.rule {
+  height: 1px;
+  background: var(--border);
+  border: 0;
+  margin: 0.25rem 0;
+}
+
+/* ============================================================
+   7. CONTROLS (search + filters)
+   ============================================================ */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.1rem 0;
+}
+
+.search {
+  position: relative;
+  flex: 1 1 240px;
+  min-width: 0;
+}
+.search__icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-soft);
+  display: flex;
+}
+.search__input {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--text);
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.6rem 1rem 0.6rem 2.5rem;
+  transition: border-color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+}
+.search__input::placeholder {
+  color: var(--text-soft);
+}
+.search__input:focus-visible {
+  outline: none;
+  border-color: var(--pink);
+  box-shadow: 0 0 0 3px var(--pink-soft);
+}
+
+/* Filters */
+.filters {
+  display: inline-flex;
+  gap: 2px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 3px;
+}
+.filter {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-soft);
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem;
+  cursor: pointer;
+  transition: color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
+}
+.filter:hover {
+  color: var(--text);
+}
+.filter.is-active {
+  color: #fff;
+  background: var(--pink);
+  box-shadow: 0 2px 6px -2px var(--rose-dark);
+}
+.filter:focus-visible {
+  outline: 2px solid var(--pink);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   8. TASK LIST & ENTRIES
+   ============================================================ */
+.task-area {
+  min-height: 120px;
+  padding: 0.5rem 0;
+}
+
+.task-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.task {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 0.85rem 0.4rem;
+  border-bottom: 1px solid var(--border);
+  animation: taskIn var(--dur) var(--ease);
+}
+.task:last-child {
+  border-bottom: 0;
+}
+.task:hover {
+  background: rgba(244, 216, 226, 0.18);
+  border-radius: 10px;
+}
+
+@keyframes taskIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom checkbox */
+.task__check {
+  position: relative;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  margin-top: 2px;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  background: var(--paper);
+  cursor: pointer;
+  transition: border-color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
+}
+.task__check:hover {
+  border-color: var(--pink);
+}
+.task__check:checked {
+  background: var(--pink);
+  border-color: var(--pink);
+}
+.task__check:checked::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 2px;
+  width: 6px;
+  height: 11px;
+  border: solid #fff;
+  border-width: 0 2.5px 2.5px 0;
+  transform: rotate(45deg);
+}
+.task__check:focus-visible {
+  outline: 2px solid var(--pink);
+  outline-offset: 2px;
+}
+
+.task__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+.task__id {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--pink);
+  background: var(--pink-soft);
+  border-radius: 6px;
+  padding: 0.1rem 0.35rem;
+  flex-shrink: 0;
+  letter-spacing: 0.02em;
+}
+.task__text {
+  font-size: 1rem;
+  color: var(--text);
+  word-break: break-word;
+  transition: color var(--dur) var(--ease),
+    opacity var(--dur) var(--ease);
+}
+
+/* Actions */
+.task__actions {
+  display: flex;
+  gap: 0.35rem;
+  flex-shrink: 0;
+  opacity: 0.8;
+  transition: opacity var(--dur) var(--ease);
+}
+.task:hover .task__actions,
+.task:focus-within .task__actions {
+  opacity: 1;
+}
+.task__action {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-soft);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  transition: color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
+}
+.task__action--edit:hover {
+  color: var(--rose-dark);
+  background: var(--pink-soft);
+}
+.task__action--delete:hover {
+  color: var(--danger);
+  background: var(--danger-soft);
+}
+.task__action:focus-visible {
+  outline: 2px solid var(--pink);
+  outline-offset: 1px;
+}
+
+/* ============================================================
+   9. COMPLETED STATE
+   ============================================================ */
+.task.is-completed .task__text {
+  text-decoration: line-through;
+  text-decoration-color: var(--text-soft);
+  color: var(--text-soft);
+  opacity: 0.7;
+}
+.task.is-completed .task__id {
+  opacity: 0.6;
+}
+
+/* ============================================================
+   10. BUTTONS
+   ============================================================ */
+.btn {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 700;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 0.65rem 1.4rem;
+  cursor: pointer;
+  transition: transform var(--dur) var(--ease),
+    background var(--dur) var(--ease), box-shadow var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.btn:active {
+  transform: translateY(1px);
+}
+.btn:focus-visible {
+  outline: 2px solid var(--rose-dark);
+  outline-offset: 2px;
+}
+.btn__plus {
+  font-size: 1.15em;
+  line-height: 0;
+}
+
+.btn--primary {
+  color: #fff;
+  background: var(--pink);
+  box-shadow: 0 6px 16px -8px var(--rose-dark);
+}
+.btn--primary:hover {
+  background: var(--rose-dark);
+}
+
+.btn--muted {
+  color: var(--text-soft);
+  background: var(--bg);
+  border-color: var(--border);
+}
+.btn--muted:hover {
+  color: var(--text);
+  background: var(--border);
+}
+
+.btn--danger {
+  color: #fff;
+  background: var(--danger);
+}
+.btn--danger:hover {
+  background: #a83f3f;
+}
+
+.btn--ghost-danger {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--danger);
+  background: transparent;
+  border-color: transparent;
+  padding: 0.4rem 0.8rem;
+}
+.btn--ghost-danger:hover {
+  background: var(--danger-soft);
+}
+
+/* ============================================================
+   11. FOOTER (count + clear completed)
+   ============================================================ */
+.notebook__footer {
+  padding-top: 0.5rem;
+}
+.footer__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-top: 0.9rem;
+  min-height: 44px;
+}
+.count {
+  font-size: 0.88rem;
+  color: var(--text-soft);
+}
+
+/* ============================================================
+   12. EMPTY STATES
+   ============================================================ */
+.empty {
+  text-align: center;
+  padding: 2.5rem 1rem;
+}
+.empty__title {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.4rem;
+}
+.empty__text {
+  color: var(--text-soft);
+  margin-bottom: 1.3rem;
+}
+
+/* ============================================================
+   13. MODAL
+   ============================================================ */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+/* The [hidden] attribute must win over display:flex above */
+.modal[hidden] {
+  display: none;
+}
+.modal__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(52, 43, 46, 0.4);
+  backdrop-filter: blur(2px);
+  animation: fade var(--dur) var(--ease);
+}
+.modal__card {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+  padding: 1.75rem;
+  animation: pop var(--dur) var(--ease);
+}
+.modal__card--sm {
+  max-width: 380px;
+}
+
+/* Decorative tape on the add/edit card */
+.tape {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-2deg);
+  width: 90px;
+  height: 24px;
+  background: rgba(244, 216, 226, 0.75);
+  border: 1px dashed rgba(217, 108, 145, 0.4);
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+
+.modal__title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.4rem;
+  color: var(--text);
+  margin-bottom: 0.3rem;
+}
+.modal__meta {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.8rem;
+  color: var(--pink);
+  margin-bottom: 0.4rem;
+}
+.modal__desc {
+  color: var(--text-soft);
+  margin-bottom: 0.6rem;
+}
+.delete__preview {
+  font-size: 1rem;
+  color: var(--text);
+  background: var(--bg);
+  border-left: 3px solid var(--pink);
+  border-radius: 6px;
+  padding: 0.6rem 0.8rem;
+  margin-bottom: 1rem;
+  word-break: break-word;
+}
+
+.modal__input {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--text);
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem 0.9rem;
+  margin-top: 0.6rem;
+  transition: border-color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+}
+.modal__input::placeholder {
+  color: var(--text-soft);
+}
+.modal__input:focus-visible {
+  outline: none;
+  border-color: var(--pink);
+  box-shadow: 0 0 0 3px var(--pink-soft);
+}
+.modal__input.has-error {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px var(--danger-soft);
+}
+.modal__error {
+  color: var(--danger);
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+.modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: 1.3rem;
+}
+
+/* ============================================================
+   14. TOASTS
+   ============================================================ */
+.toasts {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: max-content;
+  max-width: calc(100vw - 2rem);
+  pointer-events: none;
+}
+.toast {
+  background: var(--text);
+  color: var(--paper);
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.7rem 1.1rem;
+  border-radius: 999px;
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  animation: toastIn var(--dur) var(--ease);
+}
+.toast::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--pink);
+  flex-shrink: 0;
+}
+.toast.is-leaving {
+  animation: toastOut var(--dur) var(--ease) forwards;
+}
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+@keyframes toastOut {
+  to {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+/* ============================================================
+   15. RESPONSIVE
+   ============================================================ */
+@media (max-width: 560px) {
+  .notebook {
+    padding: 1.5rem 1.1rem 1.25rem;
+    border-radius: var(--radius);
+  }
+  .notebook::before {
+    left: 1.4rem;
+  }
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  /* In a column flex, flex-basis maps to height — reset so the search
+     field keeps its natural height and its icon stays centered. */
+  .search {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+  .filters {
+    justify-content: center;
+  }
+  .filter {
+    flex: 1;
+    text-align: center;
+  }
+  .task {
+    flex-wrap: wrap;
+  }
+  .task__actions {
+    opacity: 1;
+    margin-left: auto;
+  }
+  .notebook__add {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
